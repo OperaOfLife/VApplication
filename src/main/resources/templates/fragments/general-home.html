@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+   <title>TELEMEDICINE</title>
+   <!-- For-Mobile-Apps-and-Meta-Tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="" />
+    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+    <!-- //For-Mobile-Apps-and-Meta-Tags -->
+    <!-- Custom Theme files -->
+    <link th:href="@{~/css_new/bootstrap.css}" type="text/css" rel="stylesheet" media="all">
+    <link rel="stylesheet" type="text/css" th:href="@{~/css_new/style11.css}" /><!-- menu style sheet -->
+    <link th:href="@{~/css_new/style.css}" type="text/css" rel="stylesheet" media="all">
+    <!-- //Custom Theme files -->
+    <!-- font-awesome icons -->
+    <link th:href="@{~/css_new/font-awesome.css}" rel="stylesheet" type="text/css" media="all" />
+    <!-- //font-awesome icons -->
+
+    <!-- web-fonts -->
+    <link href="http://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <!-- //web-fonts -->
+</head>
+<body class="bg">
+<div th:fragment="header" id="header">
+<section class="header-w3ls">
+     <div class="bottons-agileits-w3layouts">
+       
+   		</div>
+   		
+   		<!-- <img class="logostyle float-left " th:src="@{/images/ogl3.jpg}"></img> -->
+    <h1><a >VIITAR</a></h1>
+    <div class="clearfix"> </div>
+</section>
+</div>
+
+<footer th:fragment="footer" id="footer">
+		<a href="../../main/home" th:href="@{/main/home}">Back to Home</a>
+		<br/>
+		 <small> <b	th:text="${execInfo.now.time}"></b></small>
+		  <br /> 
+		  <small>(c)TeleMedicine ,ISS, NUS 2021</small>
+	</footer>
+
+
+
+<script type='text/javascript' th:src="@{~/js_new/jquery-2.2.3.min.js}"></script>
+<!-- //js -->
+<script th:src="@{~/js_new/jquery.nicescroll.js}"></script>
+<script th:src="@{~/js_new/scripts.js}"></script>
+
+
+<!--js for bootstrap working-->
+<script th:src="@{~/js_new/bootstrap.js}"></script>
+<!-- //for bootstrap working -->
+</body>
+</html>

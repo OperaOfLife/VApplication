@@ -1,0 +1,33 @@
+@charset "ISO-8859-1";
+#allbody
+{
+	background-color:#ffffff;
+}
+
+ #nav1 {
+    position: relative;
+    height: 80px;
+    margin-bottom: 0;
+    border: none;
+} 
+.navbar img
+{
+     width :100px;
+    height: 80px;
+}
+.navbar-default {
+    background-color: transparent;
+    border-color: transparent;
+    border-radius: 0px;
+    padding:-20px;
+}
+body { 
+  padding-top:0px;
+   margin-top: 0px;
+   
+}
+#footer 
+{
+	text-align:center;
+	color:red;
+}
