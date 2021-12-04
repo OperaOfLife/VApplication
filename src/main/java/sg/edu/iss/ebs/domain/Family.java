@@ -23,6 +23,49 @@ public class Family
     
     @OneToOne
     private User user;
+
+
+	public Family(int id, String familyId, User user) {
+		super();
+		this.id = id;
+		this.familyId = familyId;
+		this.user = user;
+	}
+
+
+	public Family() {
+		super();
+	}
+
+
+	public int getId() {
+		return id;
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+
+	public String getFamilyId() {
+		return familyId;
+	}
+
+
+	public void setFamilyId(String familyId) {
+		this.familyId = familyId;
+	}
+
+
+	public User getUser() {
+		return user;
+	}
+
+
+	public void setUser(User user) {
+		this.user = user;
+	}
    
 	/*
 	 * @OneToMany(targetEntity=User.class,
@@ -30,5 +73,7 @@ public class Family
 	 * List<User> user;
 	 */
    // private User user;//userId
+    
+    
 
 }

@@ -1,5 +1,6 @@
 package sg.edu.iss.ebs.service;
 
+
 import org.springframework.http.ResponseEntity;
 
 import sg.edu.iss.ebs.domain.User;
@@ -15,4 +16,6 @@ public interface UserService
 	public ResponseEntity<User> loginuser(String uname,String pwd);	
 	boolean authenticateRegister(User user);
 	public void updatePassword(String id, String pwd);
+	public User findUserByUserId(String userId);
+	
 }

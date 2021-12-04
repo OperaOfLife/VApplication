@@ -1,7 +1,6 @@
 package sg.edu.iss.ebs.controller;
 
-import java.time.LocalDate;
-import java.util.List;
+
 
 import javax.servlet.http.HttpSession;
 
@@ -12,15 +11,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import sg.edu.iss.ebs.domain.PatientReport;
-import sg.edu.iss.ebs.domain.PatientReportDetails;
+
 import sg.edu.iss.ebs.domain.Role;
 import sg.edu.iss.ebs.domain.User;
 import sg.edu.iss.ebs.domain.UserSession;
 import sg.edu.iss.ebs.service.UserService;
-
-
-
-
 
 
 @Controller

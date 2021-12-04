@@ -1,5 +1,8 @@
 package sg.edu.iss.ebs.service;
 
+import java.util.HashMap;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +16,38 @@ public class ItemServiceImpl implements ItemService
 	@Autowired
 	ItemRepository irepo;
 
-	
-	public Item findByName(String name)
-	{
+
+	@Override
+	public List<Item> findByCatId(String id) {
+		
+		return irepo.findItemByCategoryId(id);
+	}
+
+
+	@Override
+	public Item findByName(String name) {
 		
 		return irepo.findItemByItemName(name);
-		
-		
 	}
+
+
+	@Override
+	public List<Item> findAllItems() {
+
+		return irepo.findAll();
+	}
+
+
+	@Override
+	public String findCategoryById(String itemId) {
+		
+		return irepo.findCategoryByItemId(itemId);
+	}
+
+
+	
+	
+
+	
 	
 }
