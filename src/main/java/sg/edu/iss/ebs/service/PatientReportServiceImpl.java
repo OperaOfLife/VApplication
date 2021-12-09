@@ -33,6 +33,18 @@ public class PatientReportServiceImpl implements PatientReportService
 		return prdrepo.findDetailedReportByReportId(reportId);
 	}
 
+	@Override
+	public List<PatientReport> findAllReports(String id) {
+		// TODO Auto-generated method stub
+		return prrepo.findAllReportsById(id);
+	}
+	
+	@Override
+	public byte[] getPdf(String filename) {
+		// TODO Auto-generated method stub
+		return prrepo.findPdf(filename);
+	}
+
 	
 	
 	

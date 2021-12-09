@@ -1,5 +1,6 @@
 package sg.edu.iss.ebs.controller;
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,19 +14,31 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import sg.edu.iss.ebs.domain.Family;
 import sg.edu.iss.ebs.domain.Item;
+import sg.edu.iss.ebs.domain.PatientReport;
 import sg.edu.iss.ebs.domain.PatientReportDetails;
+import sg.edu.iss.ebs.service.FamilyService;
 import sg.edu.iss.ebs.service.ItemService;
 import sg.edu.iss.ebs.service.PatientReportService;
+import sg.edu.iss.ebs.service.UploadReportService;
 
 
 @RestController
@@ -42,6 +55,12 @@ public class PatientReportRestController
 	
 	@Autowired
 	ItemService iservice;
+	
+	@Autowired
+	FamilyService fservice;
+	
+	@Autowired
+    private UploadReportService urservice;
 	
 	
 	
@@ -76,14 +95,23 @@ public class PatientReportRestController
 		  List<PatientReportDetails> prdlist = prservice.findDetailsByReportId(reportId); 
 		  	  
 		  HashMap<String, String>  prdhashmap = new HashMap<String, String>(); 
-		  for (PatientReportDetails prd :  prdlist) 
-		  { 
+		  
 			  for (Item i:categoryItem)
 			  {
-				  if(prd.getItemName().equalsIgnoreCase(i.getItemName()))
-					  	prdhashmap.put(prd.getItemName(), prd.getIntensity());
-			  }
-		 } 
+			   for (PatientReportDetails prd :  prdlist) 
+			     { 
+				  if(i.getItemName().equalsIgnoreCase(prd.getItemName()))
+				  {
+					  	prdhashmap.put(i.getItemName(), prd.getIntensity());
+					  	break;
+				  }
+				  else
+					  prdhashmap.put(i.getItemName(), "0");
+			     }
+			  } 
+		  
+		 // If(!prdhashmap.size()>0)
+		  		
 		  
 		  HashMap<String, String> sortedprdhashmap = sortbykey(prdhashmap);
 		  
@@ -142,8 +170,118 @@ public class PatientReportRestController
 	        // Display the HashMap which is naturally sorted
 	       return temp;
 	        }
-	   
 	  
+	  @GetMapping("/allReports")
+	  public ResponseEntity<Map<String, ArrayList<String>>> findAllReports(@RequestParam String userId)
+	  { 
+		   
+		 List<PatientReport> allrep=prservice.findAllReports(userId);
+		  
+		 Map<String, ArrayList<String>> reportMap = new HashMap<String, ArrayList<String>>();
+		 
+		 for (PatientReport pr :  allrep) 
+		  { 
+			 String reportId=pr.getReportId().toString();
+			 
+			  reportMap.put(reportId, new ArrayList<String>());
+			  reportMap.get(reportId).add(pr.getFileName());
+			  reportMap.get(reportId).add(pr.getType().getReportName());
+			  //reportMap.get(reportId).add(pr.getReportPdf());
+				 
+		 } 
+
+		
+		  return  new ResponseEntity<Map<String, ArrayList<String>>>(reportMap, HttpStatus.OK); 
+	}
+	  
+	  @GetMapping("/allMemberReports")
+	  public ResponseEntity<Map<String, Object>> findAllMemberReports(@RequestParam String userId)
+	  { 
+		   
+		  Family f=new Family();
+ 		  
+		  f=fservice.findByName(userId);
+		  
+		  String s=f.getFamilyId().toString();
+		  
+		  List<Family> membersIds=fservice.getAllMembers(s);
+		   
+		  Map<String, Object> memberReportMap = new HashMap<String, Object>(); 
+		  	
+		  for(Family fam : membersIds)
+		  {
+			  
+			  Map<String, ArrayList<String>> reportMapExtended = new HashMap<String, ArrayList<String>>();
+				
+		  
+			  String memberUserId=fam.getUser().getUserId();
+			  					  
+			  List<PatientReport> allrep=prservice.findAllReports(memberUserId);
+		  	 
+			  for (PatientReport pr :  allrep) 
+			  	{ 
+			
+				  String reportId=pr.getReportId().toString();
+				 
+			 
+				  reportMapExtended.put(reportId, new ArrayList<String>());
+				  reportMapExtended.get(reportId).add(pr.getFileName());
+				  reportMapExtended.get(reportId).add(pr.getType().getReportName());
+				  reportMapExtended.get(reportId).add(pr.getUser().getName());
+				  	 
+			  	} 
+			  memberReportMap.put(memberUserId, reportMapExtended);
+		  }
+
+		
+		  return  new ResponseEntity<Map<String, Object>>(memberReportMap, HttpStatus.OK); 
+	}
+	   
+	  @GetMapping("/reportPdf")
+	  public ResponseEntity<String> findReportPdf(@RequestParam String fileName)
+	  { 
+		   
+		 byte[] repPdf=prservice.getPdf(fileName);	
+		 
+		 //byte[] bytes = getByteArr();
+		 String base64String = Base64.encodeBase64String(repPdf);
+		 byte[] backToBytes = Base64.decodeBase64(base64String);
+		 
+		  return  new ResponseEntity<String>(base64String, HttpStatus.OK); 
+	} 
+	  
+	  @GetMapping("/reportPdf1")
+	  public ResponseEntity<byte[]> findReportPdf1(@RequestParam String fileName)
+	  { 
+		   
+		 byte[] repPdf=prservice.getPdf(fileName);	
+		 
+		 //byte[] bytes = getByteArr();
+		 String base64String = Base64.encodeBase64String(repPdf);
+		 byte[] backToBytes = Base64.decodeBase64(base64String);
+		 
+		  return  new ResponseEntity<byte[]>(backToBytes, HttpStatus.OK); 
+	} 
+	  
+	  @GetMapping("/downloadFile")
+	    public ResponseEntity < Object > downloadFilePdf(@RequestParam String fileName, HttpServletRequest request) {
+	        // Load file as Resource
+	    	PatientReport prFile = urservice.getFile(fileName);
+
+			/*
+			 * return ResponseEntity.ok()
+			 * .contentType(MediaType.parseMediaType(prFile.getFileType()))
+			 * .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
+			 * prFile.getFileName() + "\"") .body(new
+			 * ByteArrayResource(prFile.getReportPdf()));
+			 */
+	    	
+	    	 return ResponseEntity.ok()
+	    	            .contentType(MediaType.parseMediaType(prFile.getFileType()))
+	    	            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + prFile.getFileName() + "\"")
+	    	            .body(new ByteArrayInputStream(prFile.getReportPdf()));
+	    }
+
 	 
 	
 	  @GetMapping("/test") 

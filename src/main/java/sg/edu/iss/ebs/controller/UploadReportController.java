@@ -136,15 +136,23 @@ public class UploadReportController
  */
     
     
-    @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity < Resource > downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+    @GetMapping("/downloadFile/{fileName}")
+    public ResponseEntity < Object > downloadFile(@PathVariable String fileName, HttpServletRequest request) {
         // Load file as Resource
     	PatientReport prFile = urservice.getFile(fileName);
 
-        return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType(prFile.getFileType()))
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + prFile.getFileName() + "\"")
-            .body(new ByteArrayResource(prFile.getReportPdf()));
+		/*
+		 * return ResponseEntity.ok()
+		 * .contentType(MediaType.parseMediaType(prFile.getFileType()))
+		 * .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +
+		 * prFile.getFileName() + "\"") .body(new
+		 * ByteArrayResource(prFile.getReportPdf()));
+		 */
+    	
+    	 return ResponseEntity.ok()
+    	            .contentType(MediaType.parseMediaType(prFile.getFileType()))
+    	            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + prFile.getFileName() + "\"")
+    	            .body(new ByteArrayResource(prFile.getReportPdf()));
     }
 
 }
