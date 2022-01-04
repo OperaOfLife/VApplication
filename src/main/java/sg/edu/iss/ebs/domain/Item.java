@@ -19,11 +19,30 @@ public class Item {
 	private String description;
 	private String imageSource;
 	
+	private String itemNameChinese;
+	
+	@Lob
+	private String descriptionChinese;
+	
 	
 	
 	@ManyToOne()
 	@JoinColumn(name="categoryId", referencedColumnName = "categoryId", insertable = false, updatable = false)    
 	private Category category;
+
+
+
+	public Item(String itemId, String itemName, String description, String imageSource, String itemNameChinese,
+			String descriptionChinese, Category category) {
+		super();
+		this.itemId = itemId;
+		this.itemName = itemName;
+		this.description = description;
+		this.imageSource = imageSource;
+		this.itemNameChinese = itemNameChinese;
+		this.descriptionChinese = descriptionChinese;
+		this.category = category;
+	}
 
 
 
@@ -100,6 +119,30 @@ public class Item {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+
+
+	public String getItemNameChinese() {
+		return itemNameChinese;
+	}
+
+
+
+	public void setItemNameChinese(String itemNameChinese) {
+		this.itemNameChinese = itemNameChinese;
+	}
+
+
+
+	public String getDescriptionChinese() {
+		return descriptionChinese;
+	}
+
+
+
+	public void setDescriptionChinese(String descriptionChinese) {
+		this.descriptionChinese = descriptionChinese;
 	}
 	
 	

@@ -45,7 +45,13 @@ public class ItemServiceImpl implements ItemService
 	}
 
 
+	//Chinese
 	
+	@Override
+	public String findByNameChinese(String name) {
+		
+		return irepo.findItemByItemNameChinese(name);
+	}
 	
 
 	

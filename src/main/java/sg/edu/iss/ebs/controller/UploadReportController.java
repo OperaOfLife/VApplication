@@ -30,6 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import sg.edu.iss.ebs.domain.PatientReport;
+import sg.edu.iss.ebs.domain.PatientReportChinese;
 import sg.edu.iss.ebs.domain.PatientReportDetails;
 import sg.edu.iss.ebs.domain.Response;
 
@@ -96,8 +97,12 @@ public class UploadReportController
 
     @PostMapping("/uploadFile")
     public String uploadFile(@ModelAttribute("details") PatientReport details,@RequestParam("file") MultipartFile file,
-    							RedirectAttributes redirectAttributes,Model model,BindingResult bindingresult) 
+    		HttpServletRequest request,RedirectAttributes redirectAttributes,Model model,BindingResult bindingresult) 
     {
+    	
+    	String lang= request.getParameter("language");
+    	String chinese="ch";
+    	String fileDownloadUri ="";
     	
     	 if (file.isEmpty()) {
              redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
@@ -107,13 +112,30 @@ public class UploadReportController
          try {
         	 
         	// String intensity=details.getIntensity();
+        	 
+        	 if(lang.equalsIgnoreCase(chinese))
+        	 {
+        		 PatientReportChinese fileNameCH = urservice.storeFileCH(file,details);
+        		 fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+        		            .path("/downloadFile/")
+        		            .path(fileNameCH.getFileNameCH())
+        		            .toUriString();
+        	 }
+        	 else
+        	 {
+        		 PatientReport fileName = urservice.storeFile(file,details);
+        		 fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+        		            .path("/downloadFile/")
+        		            .path(fileName.getFileName())
+        		            .toUriString();
+        		 
+        	 }
+        
+        
+        
+        
 
-        PatientReport fileName = urservice.storeFile(file,details);
-
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-            .path("/downloadFile/")
-            .path(fileName.getFileName())
-            .toUriString();
+        
 
        //return new Response(fileName.getFileName(),  fileDownloadUri,file.getContentType(), file.getSize());
         redirectAttributes.addFlashAttribute("message",

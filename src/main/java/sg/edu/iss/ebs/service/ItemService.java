@@ -14,5 +14,6 @@ public interface ItemService {
 	
 	
 	public String findCategoryById(String itemId);
+	public String findByNameChinese(String name);
 
 }

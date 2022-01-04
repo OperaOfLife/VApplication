@@ -16,7 +16,8 @@ public class Category {
 	private String categoryId;
 	private String name;
 	private String description;
-	
+	private String name_chinese;
+	private String description_chinese;
 	
 	
 	@OneToMany(targetEntity=Item.class, mappedBy="category",cascade=CascadeType.ALL, fetch = FetchType.LAZY)    

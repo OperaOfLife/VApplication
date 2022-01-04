@@ -13,6 +13,8 @@ public interface PatientReportService
 	public PatientReport findPatientById(String name);
 
 	public List<PatientReportDetails> findDetailsByReportId(String reportId);
+	
+	
 
 	public List<PatientReport> findAllReports(String userId);
 

@@ -53,6 +53,8 @@ public class PatientReportRestController
 	@Autowired
 	PatientReportService prservice;
 	
+	
+	
 	@Autowired
 	ItemService iservice;
 	
@@ -73,6 +75,21 @@ public class PatientReportRestController
 	 * return new ResponseEntity<List<PatientReportDetails>>(prdlist,
 	 * HttpStatus.OK); }
 	 */
+	
+	
+	@GetMapping("/allReportTypes")
+	  public ResponseEntity<HashMap<String, String>> findAllReportTypes(@RequestParam String uname)
+	  { 
+		  List<PatientReport> prlist = prservice.findAllReports(uname); 
+		  HashMap<String, String>  prhashmap = new HashMap<String, String>(); 
+		  for (PatientReport pr :  prlist) 
+		  { 
+			  prhashmap.put(pr.getType().getId(), pr.getReportId());
+		 } 
+		  return  new ResponseEntity<HashMap<String, String>>(prhashmap, HttpStatus.OK); 
+	}
+	  
+	
 	
 	  @GetMapping("/intensityList")
 	  public ResponseEntity<HashMap<String, String>> findReportDetails(@RequestParam String reportId)
@@ -105,8 +122,9 @@ public class PatientReportRestController
 					  	prdhashmap.put(i.getItemName(), prd.getIntensity());
 					  	break;
 				  }
-				  else
-					  prdhashmap.put(i.getItemName(), "0");
+					/*
+					 * else prdhashmap.put(i.getItemName(), "0");
+					 */
 			     }
 			  } 
 		  
@@ -137,6 +155,8 @@ public class PatientReportRestController
 		
 		  return  new ResponseEntity<Map<String, Integer>>(sortedprdhashmap, HttpStatus.OK); 
 	}
+	  
+	
 	  
 	  
 	  
@@ -292,6 +312,86 @@ public class PatientReportRestController
 		
 		return ResponseEntity.ok("Successful Booking !! An email has been sent.");
 	  } 
+	  
+	  
+	  
+	  //Chinese .....................................
 	
-	
+	  @GetMapping("/sortedIntensityListChinese")
+	  public ResponseEntity<Map<String, Integer>> findReportDetailsSortedChinese(@RequestParam String reportId)
+	  { 
+		  
+		  
+		  
+		  List<PatientReportDetails> prdlist = prservice.findDetailsByReportId(reportId); 
+		  Map<String, Integer>  prdhashmap = new HashMap<String, Integer>(); 
+		  for (PatientReportDetails prd :  prdlist) 
+		  { 
+			  String itemInChinese=iservice.findByNameChinese(prd.getItemName());
+			  if(itemInChinese!=null)
+				  prdhashmap.put(itemInChinese, Integer.parseInt( prd.getIntensity()));
+			  else
+				  prdhashmap.put(prd.getItemName(), Integer.parseInt( prd.getIntensity()));
+		 } 
+		  
+		  Map<String, Integer> sortedprdhashmap = sortByValue(prdhashmap, DESC);
+		  
+		  	
+		
+		  return  new ResponseEntity<Map<String, Integer>>(sortedprdhashmap, HttpStatus.OK); 
+	}
+	  
+	  @GetMapping("/intensityListChinese")
+	  public ResponseEntity<HashMap<String, String>> findReportDetailsChinese(@RequestParam String reportId)
+	  { 
+		  List<PatientReportDetails> prdlist = prservice.findDetailsByReportId(reportId); 
+		  HashMap<String, String>  prdhashmap = new HashMap<String, String>(); 
+		  for (PatientReportDetails prd :  prdlist) 
+		  { 
+			  String itemInChinese=iservice.findByNameChinese(prd.getItemName());
+			  if(itemInChinese!=null)
+				  prdhashmap.put(itemInChinese, prd.getIntensity());
+			  else
+				  prdhashmap.put(prd.getItemName(), prd.getIntensity());
+		 } 
+		  return  new ResponseEntity<HashMap<String, String>>(prdhashmap, HttpStatus.OK); 
+	}
+	  
+	  
+	  @GetMapping("/categoryIntensityListChinese")
+	  public ResponseEntity<HashMap<String, String>> findCategoryItemDetailsChinese(@RequestParam String reportId,@RequestParam String categoryId)
+	  { 
+		  List<Item> categoryItem = iservice.findByCatId(categoryId);
+		  
+		  List<PatientReportDetails> prdlist = prservice.findDetailsByReportId(reportId); 
+		  	  
+		  HashMap<String, String>  prdhashmap = new HashMap<String, String>(); 
+		  
+			  for (Item i:categoryItem)
+			  {
+			   for (PatientReportDetails prd :  prdlist) 
+			     { 
+				  if(i.getItemName().equalsIgnoreCase(prd.getItemName()))
+				  {
+					  
+					  String itemInChinese=iservice.findByNameChinese(prd.getItemName());
+					  if(itemInChinese!=null)
+						  prdhashmap.put(itemInChinese, prd.getIntensity());
+					  else
+					  	prdhashmap.put(i.getItemName(), prd.getIntensity());
+					  	break;
+				  }
+					/*
+					 * else prdhashmap.put(i.getItemName(), "0");
+					 */
+			     }
+			  } 
+		  
+		 // If(!prdhashmap.size()>0)
+		  		
+		  
+		  //HashMap<String, String> sortedprdhashmap = sortbykey(prdhashmap);
+		  
+		  return  new ResponseEntity<HashMap<String, String>>(prdhashmap, HttpStatus.OK); 
+	}
 }
