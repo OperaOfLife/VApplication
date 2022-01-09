@@ -34,9 +34,11 @@ import org.springframework.web.bind.annotation.RestController;
 import sg.edu.iss.ebs.domain.Family;
 import sg.edu.iss.ebs.domain.Item;
 import sg.edu.iss.ebs.domain.PatientReport;
+import sg.edu.iss.ebs.domain.PatientReportChinese;
 import sg.edu.iss.ebs.domain.PatientReportDetails;
 import sg.edu.iss.ebs.service.FamilyService;
 import sg.edu.iss.ebs.service.ItemService;
+import sg.edu.iss.ebs.service.PatientReportChineseService;
 import sg.edu.iss.ebs.service.PatientReportService;
 import sg.edu.iss.ebs.service.UploadReportService;
 
@@ -52,6 +54,9 @@ public class PatientReportRestController
 	
 	@Autowired
 	PatientReportService prservice;
+	
+	@Autowired
+	PatientReportChineseService prcservice;
 	
 	
 	
@@ -214,6 +219,29 @@ public class PatientReportRestController
 		  return  new ResponseEntity<Map<String, ArrayList<String>>>(reportMap, HttpStatus.OK); 
 	}
 	  
+	  @GetMapping("/allReportsChinese")
+	  public ResponseEntity<Map<String, ArrayList<String>>> findAllReportsChinese(@RequestParam String userId)
+	  { 
+		   
+		 List<PatientReportChinese> allrep=prcservice.findAllReports(userId);
+		  
+		 Map<String, ArrayList<String>> reportMap = new HashMap<String, ArrayList<String>>();
+		 
+		 for (PatientReportChinese pr :  allrep) 
+		  { 
+			 String reportId=pr.getReportIdCH().toString();
+			 
+			  reportMap.put(reportId, new ArrayList<String>());
+			  reportMap.get(reportId).add(pr.getFileNameCH());
+			  reportMap.get(reportId).add(pr.getTypeCH().getReportName());
+			  //reportMap.get(reportId).add(pr.getReportPdf());
+				 
+		 } 
+
+		
+		  return  new ResponseEntity<Map<String, ArrayList<String>>>(reportMap, HttpStatus.OK); 
+	}
+	  
 	  @GetMapping("/allMemberReports")
 	  public ResponseEntity<Map<String, Object>> findAllMemberReports(@RequestParam String userId)
 	  { 
@@ -248,6 +276,49 @@ public class PatientReportRestController
 				  reportMapExtended.get(reportId).add(pr.getFileName());
 				  reportMapExtended.get(reportId).add(pr.getType().getReportName());
 				  reportMapExtended.get(reportId).add(pr.getUser().getName());
+				  	 
+			  	} 
+			  memberReportMap.put(memberUserId, reportMapExtended);
+		  }
+
+		
+		  return  new ResponseEntity<Map<String, Object>>(memberReportMap, HttpStatus.OK); 
+	}
+	  
+	  @GetMapping("/allMemberReportsChinese")
+	  public ResponseEntity<Map<String, Object>> findAllMemberReportsChinese(@RequestParam String userId)
+	  { 
+		   
+		  Family f=new Family();
+ 		  
+		  f=fservice.findByName(userId);
+		  
+		  String s=f.getFamilyId().toString();
+		  
+		  List<Family> membersIds=fservice.getAllMembers(s);
+		   
+		  Map<String, Object> memberReportMap = new HashMap<String, Object>(); 
+		  	
+		  for(Family fam : membersIds)
+		  {
+			  
+			  Map<String, ArrayList<String>> reportMapExtended = new HashMap<String, ArrayList<String>>();
+				
+		  
+			  String memberUserId=fam.getUser().getUserId();
+			  					  
+			  List<PatientReportChinese> allrep=prcservice.findAllReports(memberUserId);
+		  	 
+			  for (PatientReportChinese pr :  allrep) 
+			  	{ 
+			
+				  String reportId=pr.getReportIdCH().toString();
+				 
+			 
+				  reportMapExtended.put(reportId, new ArrayList<String>());
+				  reportMapExtended.get(reportId).add(pr.getFileNameCH());
+				  reportMapExtended.get(reportId).add(pr.getTypeCH().getReportName());
+				  reportMapExtended.get(reportId).add(pr.getUserCH().getName());
 				  	 
 			  	} 
 			  memberReportMap.put(memberUserId, reportMapExtended);

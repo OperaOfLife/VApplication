@@ -9,6 +9,7 @@ import sg.edu.iss.ebs.domain.Item;
 public interface ItemService {
 	
 	public Item findByName(String name);
+	public Item findItemByNameChinese(String name);
 	public List<Item> findByCatId(String id);
 	public List<Item> findAllItems();
 	

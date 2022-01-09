@@ -24,6 +24,9 @@ public interface ItemRepository extends JpaRepository<Item ,String>
 
 	@Query("SELECT i.itemNameChinese FROM Item i WHERE i.itemName LIKE :itemName")
 	public String findItemByItemNameChinese(@Param("itemName")String itemName);
+
+	@Query("SELECT i FROM Item i WHERE i.itemNameChinese LIKE :itemNameChinese")
+	public Item findItemByChineseItemName(@Param("itemNameChinese")String itemNameChinese);
 	
 	
 	

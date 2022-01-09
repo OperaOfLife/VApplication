@@ -44,6 +44,9 @@ public class PatientReport {
 	  
 	@OneToMany(targetEntity=PatientReportDetails.class, mappedBy="report",cascade=CascadeType.ALL, fetch = FetchType.LAZY)    
 	private List<PatientReportDetails> reportDetails;
+	
+	@OneToMany(targetEntity=PatientReportGEDetails.class, mappedBy="reportGE",cascade=CascadeType.ALL, fetch = FetchType.LAZY)    
+	private List<PatientReportGEDetails> reportDetailsGE;
 
 	
 		/*
@@ -112,6 +115,26 @@ public class PatientReport {
 		}
 		
 		
+		
+		public PatientReport(String reportId, String reportDate, byte[] reportPdf, String fileName, String fileType,
+				User user, ReportType type, List<PatientReportDetails> reportDetails,
+				List<PatientReportGEDetails> reportDetailsGE) {
+			super();
+			this.reportId = reportId;
+			this.reportDate = reportDate;
+			this.reportPdf = reportPdf;
+			this.fileName = fileName;
+			this.fileType = fileType;
+			this.user = user;
+			this.type = type;
+			this.reportDetails = reportDetails;
+			this.reportDetailsGE = reportDetailsGE;
+		}
+		  
+	  
+	  
+	 
+
 
 
 		public String getReportId() {
@@ -192,12 +215,25 @@ public class PatientReport {
 		public void setReportDetails(List<PatientReportDetails> reportDetails) {
 			this.reportDetails = reportDetails;
 		}
-		  
-	  
-	  
-	 
 
 
+
+
+		public List<PatientReportGEDetails> getReportDetailsGE() {
+			return reportDetailsGE;
+		}
+
+
+
+
+		public void setReportDetailsGE(List<PatientReportGEDetails> reportDetailsGE) {
+			this.reportDetailsGE = reportDetailsGE;
+		}
+
+
+
+
+		
 	
 	      
 

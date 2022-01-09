@@ -35,6 +35,15 @@ public class ItemRestController
 		  return  new ResponseEntity<Item>(item, HttpStatus.OK); 
 	}
 	 
+	 @GetMapping("/detailsChinese")
+	  public ResponseEntity<Item> findItemDetailsChinese(@RequestParam String itemName)
+	  { 
+		  Item item = iservice.findItemByNameChinese(itemName); 
+		  
+		  
+		  return  new ResponseEntity<Item>(item, HttpStatus.OK); 
+	}
+	 
 	 
 	 @GetMapping("/allItems")
 	  public ResponseEntity<List<Item>> findAllItems()

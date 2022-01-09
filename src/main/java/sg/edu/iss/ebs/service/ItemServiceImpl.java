@@ -29,6 +29,12 @@ public class ItemServiceImpl implements ItemService
 		
 		return irepo.findItemByItemName(name);
 	}
+	
+	@Override
+	public Item findItemByNameChinese(String name) {
+		
+		return irepo.findItemByChineseItemName(name);
+	}
 
 
 	@Override
