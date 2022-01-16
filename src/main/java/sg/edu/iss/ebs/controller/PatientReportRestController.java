@@ -36,6 +36,7 @@ import sg.edu.iss.ebs.domain.Item;
 import sg.edu.iss.ebs.domain.PatientReport;
 import sg.edu.iss.ebs.domain.PatientReportChinese;
 import sg.edu.iss.ebs.domain.PatientReportDetails;
+import sg.edu.iss.ebs.domain.PatientReportGEDetails;
 import sg.edu.iss.ebs.service.FamilyService;
 import sg.edu.iss.ebs.service.ItemService;
 import sg.edu.iss.ebs.service.PatientReportChineseService;
@@ -54,6 +55,8 @@ public class PatientReportRestController
 	
 	@Autowired
 	PatientReportService prservice;
+	
+	
 	
 	@Autowired
 	PatientReportChineseService prcservice;
@@ -108,6 +111,32 @@ public class PatientReportRestController
 		  return  new ResponseEntity<HashMap<String, String>>(prdhashmap, HttpStatus.OK); 
 	}
 	  
+	  @GetMapping("/intensityListG")
+	  public ResponseEntity<HashMap<String, String>> findReportDetailsG(@RequestParam String reportId)
+	  { 
+		  List<PatientReportGEDetails> prdlist = prservice.findGEDetailsByReportId(reportId); 
+		  HashMap<String, String>  prdhashmap = new HashMap<String, String>(); 
+		  for (PatientReportGEDetails prd :  prdlist) 
+		  { 
+			  String intensityG=prd.getIntensityG();
+			  if(!(intensityG.equalsIgnoreCase("null")))
+				  prdhashmap.put(prd.getItemName(), prd.getIntensityG());
+		 } 
+		  return  new ResponseEntity<HashMap<String, String>>(prdhashmap, HttpStatus.OK); 
+	}
+	  
+	  @GetMapping("/intensityListE")
+	  public ResponseEntity<HashMap<String, String>> findReportDetailsE(@RequestParam String reportId)
+	  { 
+		  List<PatientReportGEDetails> prdlist = prservice.findGEDetailsByReportId(reportId); 
+		  HashMap<String, String>  prdhashmap = new HashMap<String, String>(); 
+		  for (PatientReportGEDetails prd :  prdlist) 
+		  { 
+			  prdhashmap.put(prd.getItemName(), prd.getIntensityE());
+		 } 
+		  return  new ResponseEntity<HashMap<String, String>>(prdhashmap, HttpStatus.OK); 
+	}
+	  
 	  
 	  @GetMapping("/categoryIntensityList")
 	  public ResponseEntity<HashMap<String, String>> findCategoryItemDetails(@RequestParam String reportId,@RequestParam String categoryId)
@@ -141,6 +170,42 @@ public class PatientReportRestController
 		  return  new ResponseEntity<HashMap<String, String>>(sortedprdhashmap, HttpStatus.OK); 
 	}
 	  
+	  @GetMapping("/categoryIntensityListGE")
+	  public ResponseEntity<HashMap<String, ArrayList<String>>> findCategoryItemDetailsGE(@RequestParam String reportId,@RequestParam String categoryId)
+	  { 
+		  List<Item> categoryItem = iservice.findByCatId(categoryId);
+		  
+		  List<PatientReportGEDetails> prdlist = prservice.findGEDetailsByReportId(reportId); 
+		  		  
+		  	  
+		  HashMap<String, ArrayList<String>>  prdhashmap = new HashMap<String, ArrayList<String>>(); 
+		  
+			  for (Item i:categoryItem)
+			  {
+			   for (PatientReportGEDetails prd :  prdlist) 
+			     { 
+				  if(i.getItemName().equalsIgnoreCase(prd.getItemName()))
+				  {
+					  prdhashmap.put(i.getItemName(), new ArrayList<String>());
+					  prdhashmap.get(i.getItemName()).add(prd.getIntensityG());
+					  prdhashmap.get(i.getItemName()).add(prd.getIntensityE());
+					  
+					  	break;
+				  }
+					/*
+					 * else prdhashmap.put(i.getItemName(), "0");
+					 */
+			     }
+			  } 
+		  
+		 // If(!prdhashmap.size()>0)
+		  		
+		  
+		  /*HashMap<String, String> sortedprdhashmap = sortbykey(prdhashmap);*/
+		  
+		  return  new ResponseEntity<HashMap<String, ArrayList<String>>>(prdhashmap, HttpStatus.OK); 
+	}
+	  
 	  @GetMapping("/sortedIntensityList")
 	  public ResponseEntity<Map<String, Integer>> findReportDetailsSorted(@RequestParam String reportId)
 	  { 
@@ -155,6 +220,54 @@ public class PatientReportRestController
 		 } 
 		  
 		  Map<String, Integer> sortedprdhashmap = sortByValue(prdhashmap, DESC);
+		  
+		  	
+		
+		  return  new ResponseEntity<Map<String, Integer>>(sortedprdhashmap, HttpStatus.OK); 
+	}
+	  
+	  @GetMapping("/sortedIntensityListG")
+	  public ResponseEntity<Map<String, Integer>> findReportDetailsSortedG(@RequestParam String reportId)
+	  { 
+		  
+		  
+		  
+		  List<PatientReportGEDetails> prdlist = prservice.findGEDetailsByReportId(reportId); 
+		  Map<String, Integer>  prdhashmap = new HashMap<String, Integer>(); 
+		  for (PatientReportGEDetails prd :  prdlist) 
+		  { 
+			  //int intensity=0;
+			  String intensityG=prd.getIntensityG();
+			  if(!(intensityG.equalsIgnoreCase("null")))
+				   prdhashmap.put(prd.getItemName(), Integer.parseInt( intensityG));
+		 } 
+		  
+		  Map<String, Integer> sortedprdhashmap = sortByValue(prdhashmap, DESC);
+		  
+		  	
+		
+		  return  new ResponseEntity<Map<String, Integer>>(sortedprdhashmap, HttpStatus.OK); 
+	}
+	  
+	  @GetMapping("/sortedIntensityListE")
+	  public ResponseEntity<Map<String, Integer>> findReportDetailsSortedE(@RequestParam String reportId)
+	  { 
+		  
+		  
+		  
+		  
+		  List<PatientReportGEDetails> prdlist = prservice.findGEDetailsByReportId(reportId); 
+		  Map<String, Integer>  prdhashmap = new HashMap<String, Integer>(); 
+		  for (PatientReportGEDetails prd :  prdlist) 
+		  { 
+			  
+			  String intensityE=prd.getIntensityE();
+			  
+			  prdhashmap.put(prd.getItemName(), Integer.parseInt( intensityE));
+		 } 
+		  
+		  Map<String, Integer> sortedprdhashmap = sortByValue(prdhashmap, DESC);
+		  
 		  
 		  	
 		
@@ -271,14 +384,18 @@ public class PatientReportRestController
 			
 				  String reportId=pr.getReportId().toString();
 				 
-			 
+				  
 				  reportMapExtended.put(reportId, new ArrayList<String>());
 				  reportMapExtended.get(reportId).add(pr.getFileName());
 				  reportMapExtended.get(reportId).add(pr.getType().getReportName());
 				  reportMapExtended.get(reportId).add(pr.getUser().getName());
+				  	
 				  	 
 			  	} 
+			  if(!(reportMapExtended.isEmpty()))
+			  	{
 			  memberReportMap.put(memberUserId, reportMapExtended);
+			  	}
 		  }
 
 		
@@ -429,6 +546,45 @@ public class PatientReportRestController
 	}
 	  
 	  
+	  @GetMapping("/intensityListChineseG")
+	  public ResponseEntity<HashMap<String, String>> findReportDetailsChineseG(@RequestParam String reportId)
+	  { 
+		  List<PatientReportGEDetails> prdlist = prservice.findGEDetailsByReportId(reportId); 
+		  HashMap<String, String>  prdhashmap = new HashMap<String, String>(); 
+		  for (PatientReportGEDetails prd :  prdlist) 
+		  { 
+			  String intensityG=prd.getIntensityG();
+			  if(!(intensityG.equalsIgnoreCase("null")))
+			  {
+			  String itemInChinese=iservice.findByNameChinese(prd.getItemName());
+			  if(itemInChinese!=null)
+				  prdhashmap.put(itemInChinese, prd.getIntensityG());
+			  else
+				  prdhashmap.put(prd.getItemName(), prd.getIntensityG());
+			  
+			  }
+		 } 
+		  return  new ResponseEntity<HashMap<String, String>>(prdhashmap, HttpStatus.OK); 
+	}
+	  
+	  
+	  @GetMapping("/intensityListChineseE")
+	  public ResponseEntity<HashMap<String, String>> findReportDetailsChineseE(@RequestParam String reportId)
+	  { 
+		  List<PatientReportGEDetails> prdlist = prservice.findGEDetailsByReportId(reportId); 
+		  HashMap<String, String>  prdhashmap = new HashMap<String, String>(); 
+		  for (PatientReportGEDetails prd :  prdlist) 
+		  { 
+			  
+			  String itemInChinese=iservice.findByNameChinese(prd.getItemName());
+			  if(itemInChinese!=null)
+				  prdhashmap.put(itemInChinese, prd.getIntensityE());
+			  else
+				  prdhashmap.put(prd.getItemName(), prd.getIntensityE());
+		 } 
+		  return  new ResponseEntity<HashMap<String, String>>(prdhashmap, HttpStatus.OK); 
+	}
+	  
 	  @GetMapping("/categoryIntensityListChinese")
 	  public ResponseEntity<HashMap<String, String>> findCategoryItemDetailsChinese(@RequestParam String reportId,@RequestParam String categoryId)
 	  { 
@@ -465,4 +621,123 @@ public class PatientReportRestController
 		  
 		  return  new ResponseEntity<HashMap<String, String>>(prdhashmap, HttpStatus.OK); 
 	}
+	  
+	  @GetMapping("/categoryIntensityListChineseGE")
+	  public ResponseEntity<HashMap<String, ArrayList<String>>> findCategoryItemDetailsChineseGE(@RequestParam String reportId,@RequestParam String categoryId)
+	  { 
+		  List<Item> categoryItem = iservice.findByCatId(categoryId);
+		  
+		  List<PatientReportGEDetails> prdlist = prservice.findGEDetailsByReportId(reportId); 
+		  		  
+		  	  
+		  HashMap<String, ArrayList<String>>  prdhashmap = new HashMap<String, ArrayList<String>>(); 
+		  
+			  for (Item i:categoryItem)
+			  {
+			   for (PatientReportGEDetails prd :  prdlist) 
+			     { 
+				  if(i.getItemName().equalsIgnoreCase(prd.getItemName()))
+				  {
+					  
+					  String itemInChinese=iservice.findByNameChinese(prd.getItemName());
+					  if(itemInChinese!=null) {
+						  prdhashmap.put(itemInChinese, new ArrayList<String>());
+						  prdhashmap.get(itemInChinese).add(prd.getIntensityG());
+						  prdhashmap.get(itemInChinese).add(prd.getIntensityE());
+					  }
+					  else
+					  {
+						  prdhashmap.put(i.getItemName(), new ArrayList<String>());
+						  prdhashmap.get(i.getItemName()).add(prd.getIntensityG());
+						  prdhashmap.get(i.getItemName()).add(prd.getIntensityE());
+					  
+					  }
+					  
+					  
+					  	break;
+				  }
+					/*
+					 * else prdhashmap.put(i.getItemName(), "0");
+					 */
+			     }
+			  } 
+		  
+		 // If(!prdhashmap.size()>0)
+		  		
+		  
+		  /*HashMap<String, String> sortedprdhashmap = sortbykey(prdhashmap);*/
+		  
+		  return  new ResponseEntity<HashMap<String, ArrayList<String>>>(prdhashmap, HttpStatus.OK); 
+	}
+	  
+	  
+	  
+	  @GetMapping("/sortedIntensityListChineseG")
+	  public ResponseEntity<Map<String, Integer>> findReportDetailsSortedChineseG(@RequestParam String reportId)
+	  { 
+		  
+		  
+		  
+		  List<PatientReportGEDetails> prdlist = prservice.findGEDetailsByReportId(reportId); 
+		  Map<String, Integer>  prdhashmap = new HashMap<String, Integer>(); 
+		  for (PatientReportGEDetails prd :  prdlist) 
+		  { 
+			  
+			  
+			  //int intensity=0;
+			  String intensityG=prd.getIntensityG();
+			  if(!(intensityG.equalsIgnoreCase("null")))
+			  {
+				  
+				  String itemInChinese=iservice.findByNameChinese(prd.getItemName());
+				  if(itemInChinese!=null)
+					  	prdhashmap.put(itemInChinese, Integer.parseInt( intensityG));
+				  else				  
+					  	prdhashmap.put(prd.getItemName(), Integer.parseInt( intensityG));
+			  }
+		 } 
+		  
+		  Map<String, Integer> sortedprdhashmap = sortByValue(prdhashmap, DESC);
+		  
+		  	
+		
+		  return  new ResponseEntity<Map<String, Integer>>(sortedprdhashmap, HttpStatus.OK); 
+	}
+	  
+	  @GetMapping("/sortedIntensityListChineseE")
+	  public ResponseEntity<Map<String, Integer>> findReportDetailsSortedChineseE(@RequestParam String reportId)
+	  { 
+		  
+		  
+		  
+		  
+		  List<PatientReportGEDetails> prdlist = prservice.findGEDetailsByReportId(reportId); 
+		  Map<String, Integer>  prdhashmap = new HashMap<String, Integer>(); 
+		  for (PatientReportGEDetails prd :  prdlist) 
+		  { 
+			  String itemInChinese=iservice.findByNameChinese(prd.getItemName());
+			  if(itemInChinese!=null)
+			  {
+				  String intensityE=prd.getIntensityE();
+				  
+				  prdhashmap.put(itemInChinese, Integer.parseInt( intensityE));
+			  }
+			  else
+			  {
+				  String intensityE=prd.getIntensityE();
+				  
+				  prdhashmap.put(prd.getItemName(), Integer.parseInt( intensityE));
+			  }
+			  
+			  
+		 } 
+		  
+		  Map<String, Integer> sortedprdhashmap = sortByValue(prdhashmap, DESC);
+		  
+		  
+		  	
+		
+		  return  new ResponseEntity<Map<String, Integer>>(sortedprdhashmap, HttpStatus.OK); 
+	}
+	  
 }

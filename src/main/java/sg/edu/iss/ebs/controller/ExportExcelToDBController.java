@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import sg.edu.iss.ebs.domain.PatientReportDetails;
-
+import sg.edu.iss.ebs.domain.PatientReportGEDetails;
 import sg.edu.iss.ebs.repo.PatientReportDetailsRepository;
 import sg.edu.iss.ebs.service.ExportExcelToDBService;
 import sg.edu.iss.ebs.service.FileExporterService;
@@ -44,6 +44,15 @@ private static String UPLOADED_FOLDER1 = "D://VIITAR//";
     	
     	model.addAttribute("export",new  PatientReportDetails());
         return "export-excel-data";
+    }
+	
+	
+	@GetMapping("/page224")
+    public String index224(Model model) {
+    	
+    	
+    	model.addAttribute("export224",new  PatientReportDetails());
+        return "export-excel-data-224";
     }
 	
 	
@@ -84,6 +93,20 @@ private static String UPLOADED_FOLDER1 = "D://VIITAR//";
     	
     	List<PatientReportDetails> excelDataAsList = excelservice.getExcelDataAsList(filePath);
     	int noOfRecords = excelservice.saveExcelData(excelDataAsList);
+    	model.addAttribute("noOfRecords",noOfRecords);
+    	
+    	return "export-excel-data-confirmation";
+    }
+    
+    @RequestMapping("/saveData224")
+    public String saveExcelData224(@ModelAttribute("invoice") PatientReportGEDetails reportDetails,@RequestParam("file") MultipartFile file,
+    										Model model,BindingResult bindingresult) 
+    {
+    	String filePath=UPLOADED_FOLDER1 + file.getOriginalFilename();
+    	//String details=reportDetails.getDescription();
+    	
+    	List<PatientReportGEDetails> excelDataAsList = excelservice.getExcelDataAsList224(filePath);
+    	int noOfRecords = excelservice.saveExcelData224(excelDataAsList);
     	model.addAttribute("noOfRecords",noOfRecords);
     	
     	return "export-excel-data-confirmation";

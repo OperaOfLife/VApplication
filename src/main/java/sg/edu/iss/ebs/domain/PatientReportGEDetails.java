@@ -28,6 +28,12 @@ public class PatientReportGEDetails
 
 
 
+	public PatientReportGEDetails() {
+		super();
+	}
+
+
+
 	public PatientReportGEDetails(int id, String intensityG, String intensityE,PatientReport reportGE) 
 	{
 		super();

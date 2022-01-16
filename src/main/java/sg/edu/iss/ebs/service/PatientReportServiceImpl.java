@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import sg.edu.iss.ebs.domain.PatientReport;
 import sg.edu.iss.ebs.domain.PatientReportDetails;
+import sg.edu.iss.ebs.domain.PatientReportGEDetails;
+import sg.edu.iss.ebs.repo.PatientReportDetailsGERepository;
 import sg.edu.iss.ebs.repo.PatientReportDetailsRepository;
 import sg.edu.iss.ebs.repo.PatientReportRepository;
 
@@ -21,6 +23,9 @@ public class PatientReportServiceImpl implements PatientReportService
 	
 	@Autowired
 	PatientReportDetailsRepository prdrepo;
+	
+	@Autowired
+	PatientReportDetailsGERepository prd224repo;
 
 	@Override
 	public PatientReport findPatientById(String id) {
@@ -31,6 +36,12 @@ public class PatientReportServiceImpl implements PatientReportService
 	public List<PatientReportDetails> findDetailsByReportId(String reportId) {
 		
 		return prdrepo.findDetailedReportByReportId(reportId);
+	}
+	
+	@Override
+	public List<PatientReportGEDetails> findGEDetailsByReportId(String reportId) {
+		
+		return prd224repo.findGEDetailedReportByReportId(reportId);
 	}
 
 	@Override
